@@ -1,17 +1,14 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
-// 전역 ext 설정 (모든 서브프로젝트가 평가되기 전에 설정되어야 함)
-// expo-modules-core가 평가되기 전에 반드시 설정되어야 함
-// 모든 형태의 Kotlin 버전 속성을 확인
-ext.kotlinVersion = findProperty('expo.kotlin.version') ?: findProperty('KOTLIN_VERSION') ?: findProperty('android.kotlinVersion') ?: findProperty('kotlinVersion') ?: '1.9.25'
-
 buildscript {
     ext {
+        // 전역 kotlinVersion 설정 (모든 형태의 Kotlin 버전 속성을 확인)
+        kotlinVersion = findProperty('expo.kotlin.version') ?: findProperty('KOTLIN_VERSION') ?: findProperty('android.kotlinVersion') ?: findProperty('kotlinVersion') ?: '1.9.25'
+        
         buildToolsVersion = findProperty('android.buildToolsVersion') ?: '35.0.0'
         minSdkVersion = Integer.parseInt(findProperty('android.minSdkVersion') ?: '24')
         compileSdkVersion = Integer.parseInt(findProperty('android.compileSdkVersion') ?: '35')
         targetSdkVersion = Integer.parseInt(findProperty('android.targetSdkVersion') ?: '34')
-        kotlinVersion = rootProject.ext.kotlinVersion
 
         ndkVersion = "26.1.10909125"
     }
@@ -31,6 +28,10 @@ plugins {
 }
 
 apply plugin: "com.facebook.react.rootproject"
+
+// rootProject.ext.kotlinVersion 설정 (expo-modules-core가 참조할 수 있도록)
+// buildscript.ext.kotlinVersion과 동일한 값 사용
+ext.kotlinVersion = findProperty('expo.kotlin.version') ?: findProperty('KOTLIN_VERSION') ?: findProperty('android.kotlinVersion') ?: findProperty('kotlinVersion') ?: '1.9.25'
 
 allprojects {
     // 모든 서브프로젝트에서 kotlinVersion 접근 가능하도록 설정
