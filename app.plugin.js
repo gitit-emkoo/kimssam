@@ -7,7 +7,7 @@ const path = require('path');
  * buildscript {} 블록은 유지하되, Kotlin 버전만 1.9.25로 강제
  */
 const withKotlinVersion = (config) => {
-  // 1. gradle.properties에 Kotlin 버전 설정
+  // 1. gradle.properties에 Kotlin 버전 설정 (모든 프로젝트에서 접근 가능)
   config = withGradleProperties(config, (config) => {
     const existingProps = config.modResults || [];
     
@@ -23,6 +23,21 @@ const withKotlinVersion = (config) => {
       });
     } else {
       kotlinVersionProp.value = '1.9.25';
+    }
+    
+    // android.kotlinVersion도 설정 (일부 모듈에서 사용)
+    const androidKotlinVersionProp = existingProps.find(
+      (prop) => prop.key === 'android.kotlinVersion'
+    );
+    
+    if (!androidKotlinVersionProp) {
+      config.modResults.push({
+        type: 'property',
+        key: 'android.kotlinVersion',
+        value: '1.9.25',
+      });
+    } else {
+      androidKotlinVersionProp.value = '1.9.25';
     }
     
     return config;

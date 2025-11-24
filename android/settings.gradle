@@ -33,14 +33,6 @@ dependencyResolutionManagement {
 }
 
 apply from: new File(["node", "--print", "require.resolve('expo/package.json')"].execute(null, rootDir).text.trim(), "../scripts/autolinking.gradle");
-
-// 모든 프로젝트에 kotlinVersion 전역 설정 (expo-modules-core가 평가되기 전에)
-gradle.projectsLoaded {
-    rootProject.allprojects {
-        ext.kotlinVersion = rootProject.ext.kotlinVersion ?: '1.9.25'
-    }
-}
-
 useExpoModules()
 
 include ':app'
