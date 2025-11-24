@@ -1,9 +1,7 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 // 전역 ext 설정 (모든 서브프로젝트가 평가되기 전에 설정되어야 함)
-ext {
-    kotlinVersion = findProperty('android.kotlinVersion') ?: findProperty('kotlinVersion') ?: '1.9.25'
-}
+ext.kotlinVersion = findProperty('android.kotlinVersion') ?: findProperty('kotlinVersion') ?: '1.9.25'
 
 buildscript {
     ext {
@@ -11,7 +9,7 @@ buildscript {
         minSdkVersion = Integer.parseInt(findProperty('android.minSdkVersion') ?: '24')
         compileSdkVersion = Integer.parseInt(findProperty('android.compileSdkVersion') ?: '35')
         targetSdkVersion = Integer.parseInt(findProperty('android.targetSdkVersion') ?: '34')
-        kotlinVersion = ext.kotlinVersion
+        kotlinVersion = rootProject.ext.kotlinVersion
 
         ndkVersion = "26.1.10909125"
     }
