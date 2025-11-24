@@ -1,7 +1,8 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 // 전역 ext 설정 (모든 서브프로젝트가 평가되기 전에 설정되어야 함)
-ext.kotlinVersion = findProperty('android.kotlinVersion') ?: findProperty('kotlinVersion') ?: '1.9.25'
+// expo-modules-core가 평가되기 전에 반드시 설정되어야 함
+ext.kotlinVersion = findProperty('expo.kotlin.version') ?: findProperty('android.kotlinVersion') ?: findProperty('kotlinVersion') ?: '1.9.25'
 
 buildscript {
     ext {

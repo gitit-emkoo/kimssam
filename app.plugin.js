@@ -193,32 +193,44 @@ allprojects {
         let content = fs.readFileSync(expoModulesCorePath, 'utf8');
         const originalContent = content;
         
-        // 먼저 ext 블록에 kotlinVersion이 있는지 확인하고 추가/수정
-        if (content.includes('ext {')) {
-          // ext 블록이 있는 경우
+        // expo-modules-core의 build.gradle에서 kotlinVersion 참조를 수정
+        // 파일 시작 부분에 ext 블록 추가 (가장 확실한 방법)
+        if (!content.includes('ext {')) {
+          // ext 블록이 없으면 파일 시작 부분에 추가
+          content = `ext {\n    kotlinVersion = rootProject.ext.kotlinVersion ?: findProperty('expo.kotlin.version') ?: findProperty('kotlinVersion') ?: "1.9.25"\n}\n\n${content}`;
+        } else {
+          // ext 블록이 있으면 kotlinVersion 추가 또는 수정
           if (content.includes('kotlinVersion')) {
             // kotlinVersion이 이미 있으면 rootProject.ext.kotlinVersion으로 변경
             content = content.replace(
               /kotlinVersion\s*=\s*[^,\n}]+/g,
-              'kotlinVersion = rootProject.ext.kotlinVersion ?: "1.9.25"'
+              'kotlinVersion = rootProject.ext.kotlinVersion ?: findProperty("expo.kotlin.version") ?: findProperty("kotlinVersion") ?: "1.9.25"'
             );
           } else {
             // ext 블록은 있지만 kotlinVersion이 없으면 추가
             content = content.replace(
               /(ext\s*\{)/,
-              `$1\n    kotlinVersion = rootProject.ext.kotlinVersion ?: "1.9.25"`
+              `$1\n    kotlinVersion = rootProject.ext.kotlinVersion ?: findProperty('expo.kotlin.version') ?: findProperty('kotlinVersion') ?: "1.9.25"`
             );
           }
-        } else {
-          // ext 블록이 없으면 파일 시작 부분에 추가
-          content = `ext {\n    kotlinVersion = rootProject.ext.kotlinVersion ?: "1.9.25"\n}\n\n${content}`;
         }
         
         // kotlinVersion 변수 사용 부분을 rootProject.ext.kotlinVersion으로 변경
-        // 단, 할당문(kotlinVersion = ...)은 제외
+        // 단, 할당문(kotlinVersion = ...)과 ext 블록 내부는 제외
         content = content.replace(
           /([^=])\bkotlinVersion\b(?!\s*[=:])/g,
-          '$1(rootProject.ext.kotlinVersion ?: "1.9.25")'
+          (match, prefix) => {
+            // ext 블록 내부인지 확인
+            const beforeMatch = content.substring(0, content.indexOf(match));
+            const extBlocks = (beforeMatch.match(/ext\s*\{/g) || []).length;
+            const extCloses = (beforeMatch.match(/\}/g) || []).length;
+            if (extBlocks > extCloses) {
+              // ext 블록 내부이면 그대로 유지
+              return match;
+            }
+            // ext 블록 외부이면 rootProject.ext.kotlinVersion으로 변경
+            return prefix + '(rootProject.ext.kotlinVersion ?: findProperty("expo.kotlin.version") ?: findProperty("kotlinVersion") ?: "1.9.25")';
+          }
         );
         
         if (content !== originalContent) {
