@@ -6,19 +6,45 @@ node_modules/
 # Testing
 coverage/
 
-# Production
+# Builds
 build/
 dist/
 
-# Misc
-.DS_Store
-*.pem
-*.log
+# Expo / React Native
+.expo/
+.metro-health-check*
+expo-env.d.ts
+web-build/
 
-# Debug
+# Native artifacts
+.kotlin/
+.gradle/
+android/.gradle/
+android/build/
+android/app/build/
+packages/app/android/.gradle/
+packages/app/android/build/
+packages/app/android/app/build/
+/android
+/ios
+!/android/settings.gradle
+!/android/build.gradle
+!/android/app/build.gradle
+*.orig.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+
+# Logs & debug
+*.log
 npm-debug.log*
+npm-debug.*
 yarn-debug.log*
+yarn-debug.*
 yarn-error.log*
+yarn-error.*
 
 # Local env files
 .env
@@ -27,38 +53,13 @@ yarn-error.log*
 .env.test.local
 .env.production.local
 
-# Expo
-.expo/
-expo-env.d.ts
-web-build/
-
-# Native
-.kotlin/
-*.orig.*
-*.jks
-*.p8
-*.p12
-*.key
-*.mobileprovision
-
-# Gradle
-.gradle/
-packages/app/android/.gradle/
-packages/app/android/build/
-packages/app/android/app/build/
-
-# Metro
-.metro-health-check*
-
 # TypeScript
 *.tsbuildinfo
 
-# IDE
+# IDE / OS
 .vscode/
 .idea/
+.DS_Store
+Thumbs.db
 *.swp
 *.swo
-
-# OS
-Thumbs.db
-
